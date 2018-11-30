@@ -6,21 +6,34 @@ public class IoTNode {
     public static void main(String[] args) {
         try(Socket socketAtNode = new Socket("localhost", 10567);
             DataOutputStream out = new DataOutputStream(socketAtNode.getOutputStream());
+            PrintWriter sendStatusToCachingNode = new PrintWriter(socketAtNode.getOutputStream(), true);
             BufferedReader readIn = new BufferedReader(new InputStreamReader(socketAtNode.getInputStream()));){
 
             System.out.println("Connected to CacheNode ...");
-            String msg_from_CacheNode = readIn.readLine();
+            FeedBackLoop feedBackLoop = new FeedBackLoop();
 
-            if(msg_from_CacheNode.equals("active")){
-                FileReadFromResourceDir readFile = new FileReadFromResourceDir();
-                File sendFile = readFile.getFile("instructor.json");
-                byte[] byteArray = readByteFromFile(sendFile);
-                out.write(byteArray); //send byte[] to server
-                out.flush();
+            //Begin a loop of sending to the CacheNode base on Feedback loop
+            while(true){
+                //Get IoT node status and send to CachingNode
+                String nodeStatus = feedBackLoop.currentNodeStatus();
+                sendStatusToCachingNode.println(nodeStatus);
+
+                //Get status duration, and system time in milliseconds before entering the sending loop
+                int status_duration = feedBackLoop.duration_of_Status();
+                long startTime = System.currentTimeMillis();
+                long endTime = 0;
+                int streaming_frequency = feedBackLoop.stream_sending_frequency(nodeStatus);
+
+                while((endTime - startTime) <= status_duration){
+                    FileReadFromResourceDir readFile = new FileReadFromResourceDir();
+                    File sendFile = readFile.getFile("instructor.json");
+                    byte[] byteArray = readByteFromFile(sendFile);
+                    out.write(byteArray); //send byte[] to server
+                    out.flush();
+                    endTime = System.currentTimeMillis();
+                    Thread.sleep(streaming_frequency);
+                }
             }
-
-            System.out.println("Closing connection  ...");
-
         }catch (Exception e){
             e.printStackTrace();
         }
