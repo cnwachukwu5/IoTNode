@@ -16,10 +16,12 @@ public class IoTNode {
             while(true){
                 //Get IoT node status and send to CachingNode
                 String nodeStatus = feedBackLoop.currentNodeStatus();
+                System.out.println("currentStatus: " + nodeStatus);
                 sendStatusToCachingNode.println(nodeStatus);
 
                 //Get status duration, and system time in milliseconds before entering the sending loop
                 int status_duration = feedBackLoop.duration_of_Status();
+                System.out.println("duration: "+ status_duration);
                 long startTime = System.currentTimeMillis();
                 long endTime = 0;
                 int streaming_frequency = feedBackLoop.stream_sending_frequency(nodeStatus);
@@ -31,6 +33,7 @@ public class IoTNode {
                     out.write(byteArray); //send byte[] to server
                     out.flush();
                     endTime = System.currentTimeMillis();
+                    System.out.println("Data sent");
                     Thread.sleep(streaming_frequency);
                 }
             }
