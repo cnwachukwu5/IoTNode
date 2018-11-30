@@ -1,0 +1,25 @@
+{
+  "professors": [
+    {
+      "prefix": "Professor",
+      "lastname": "Jeff",
+      "firstname": "Ward",
+      "title": "Adjunct",
+      "course": "CSC685"
+    },
+    {
+      "prefix": "Professor",
+      "lastname": "Newel",
+      "firstname": "Garry",
+      "title": "Senior",
+      "course": "CSC660"
+    },
+    {
+      "prefix": "Professor",
+      "lastname": "Cho",
+      "firstname": "Samuel",
+      "title": "Associate",
+      "course": "CSC440"
+    }
+  ]
+}
