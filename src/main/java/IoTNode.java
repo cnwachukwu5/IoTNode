@@ -1,11 +1,12 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.Random;
 
 public class IoTNode {
 
     public static void main(String[] args) {
         try(Socket socketAtNode = new Socket("localhost", 10567);
-            DataOutputStream out = new DataOutputStream(socketAtNode.getOutputStream());
+            //DataOutputStream out = new DataOutputStream(socketAtNode.getOutputStream());
             PrintWriter sendStatusToCachingNode = new PrintWriter(socketAtNode.getOutputStream(), true);
             BufferedReader readIn = new BufferedReader(new InputStreamReader(socketAtNode.getInputStream()));){
 
@@ -27,13 +28,15 @@ public class IoTNode {
                 int streaming_frequency = feedBackLoop.stream_sending_frequency(nodeStatus);
 
                 while((endTime - startTime) <= status_duration){
-                    FileReadFromResourceDir readFile = new FileReadFromResourceDir();
-                    File sendFile = readFile.getFile("instructor.json");
-                    byte[] byteArray = readByteFromFile(sendFile);
-                    out.write(byteArray); //send byte[] to server
-                    out.flush();
+//                    FileReadFromResourceDir readFile = new FileReadFromResourceDir();
+//                    File sendFile = readFile.getFile("instructor.json");
+//                    byte[] byteArray = readByteFromFile(sendFile);
+//                    out.write(byteArray); //send byte[] to server
+//                    out.flush();
+                    //sendStatusToCachingNode.println(randomTemperatureValue());
                     endTime = System.currentTimeMillis();
-                    System.out.println("Data sent");
+                    if(!nodeStatus.equals("IDLE"))
+                        System.out.println("Data sent");
                     Thread.sleep(streaming_frequency);
                 }
             }
@@ -41,6 +44,11 @@ public class IoTNode {
             e.printStackTrace();
         }
 
+    }
+
+    private static String randomTemperatureValue(){
+        Random rand = new Random();
+        return ""+rand.nextInt(150-50+1) + 1;
     }
 
     private static byte[] readByteFromFile(File file){
