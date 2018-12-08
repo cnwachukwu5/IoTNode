@@ -9,10 +9,10 @@ public class FeedBackLoop {
 
     public FeedBackLoop() {
         this.nodeStatus = new String[] {"HIGH_SEND", "MODERATE_SEND", "LOW", "IDLE"};
-        this.stream_frequency.put("HIGH_SEND",1000);
-        this.stream_frequency.put("MODERATE_SEND",2000);
-        this.stream_frequency.put("LOW",5000);
-        this.stream_frequency.put("IDLE",10000);
+        this.stream_frequency.put("HIGH_SEND",10);
+        this.stream_frequency.put("MODERATE_SEND",200);
+        this.stream_frequency.put("LOW",500);
+        this.stream_frequency.put("IDLE",1000);
     }
 
     public String currentNodeStatus(){
@@ -29,7 +29,7 @@ public class FeedBackLoop {
         Random rand = new Random();
 
         //Using (max-min+1) + 1 -- between 100 - 1000 milliseconds
-        return rand.nextInt(10000-100+1) + 1;
+        return rand.nextInt(1000-100+1) + 1;
     }
 
     public int stream_sending_frequency(String status){
