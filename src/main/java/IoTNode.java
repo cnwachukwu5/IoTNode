@@ -1,44 +1,59 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class IoTNode {
 
     public static void main(String[] args) {
         try(Socket socketAtNode = new Socket("localhost", 10567);
-            //DataOutputStream out = new DataOutputStream(socketAtNode.getOutputStream());
+
             PrintWriter sendStatusToCachingNode = new PrintWriter(socketAtNode.getOutputStream(), true);
             BufferedReader readIn = new BufferedReader(new InputStreamReader(socketAtNode.getInputStream()));){
 
             System.out.println("Connected to CacheNode ...");
             FeedBackLoop feedBackLoop = new FeedBackLoop();
 
+            List<String> strings = randomString(100);
+            strings.add("EODATA");
+
+            int count = 0;
             //Begin a loop of sending to the CacheNode base on Feedback loop
-            while(true){
-                //Get IoT node status and send to CachingNode
+            while(count < strings.size()){
+                //Get IoT node status
                 String nodeStatus = feedBackLoop.currentNodeStatus();
                 System.out.println("currentStatus: " + nodeStatus);
-                sendStatusToCachingNode.println(nodeStatus);
 
                 //Get status duration, and system time in milliseconds before entering the sending loop
                 int status_duration = feedBackLoop.duration_of_Status();
                 System.out.println("duration: "+ status_duration);
+
                 long startTime = System.currentTimeMillis();
                 long endTime = 0;
                 int streaming_frequency = feedBackLoop.stream_sending_frequency(nodeStatus);
 
-                while((endTime - startTime) <= status_duration){
-//                    FileReadFromResourceDir readFile = new FileReadFromResourceDir();
-//                    File sendFile = readFile.getFile("instructor.json");
-//                    byte[] byteArray = readByteFromFile(sendFile);
-//                    out.write(byteArray); //send byte[] to server
-//                    out.flush();
-                    //sendStatusToCachingNode.println(randomTemperatureValue());
-                    endTime = System.currentTimeMillis();
-                    if(!nodeStatus.equals("IDLE"))
-                        System.out.println("Data sent");
-                    Thread.sleep(streaming_frequency);
-                }
+                //Send IoT data and status to cacheNode
+                //while((endTime - startTime) <= status_duration){
+
+                        String data_value = strings.get(count);
+
+
+                        if(!nodeStatus.equals("IDLE")){
+                            sendStatusToCachingNode.println(nodeStatus+":"+data_value);
+                            System.out.println(nodeStatus+":"+data_value);
+                            count++;
+                            Thread.sleep(streaming_frequency); //Simulate network delay
+                        }else{
+                            sendStatusToCachingNode.println("IoT_Node is idle");
+                            Thread.sleep(streaming_frequency);
+                        }
+
+                    //endTime = System.currentTimeMillis();
+
+
+                //}
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -75,5 +90,20 @@ public class IoTNode {
         }
 
         return fileInByte;
+    }
+
+    private static String anyString(){
+        String name = UUID.randomUUID().toString();
+        name = name.replace("-","");
+        return name;
+    }
+
+    private static List<String> randomString(int lengthOfList){
+        ArrayList<String> listOfString = new ArrayList<>();
+        for(int x = 0; x < lengthOfList; x++){
+            listOfString.add(anyString());
+        }
+
+        return listOfString;
     }
 }
