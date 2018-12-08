@@ -5,13 +5,13 @@ import java.util.Random;
 public class FeedBackLoop {
 
     private String[] nodeStatus = null;
-    private Map<String, Integer> stream_frequency = new HashMap<>();  //Simulate network delay based on oT status
+    private Map<String, Integer> stream_frequency = new HashMap<>();  //Simulate network delay based on IoT status
 
     public FeedBackLoop() {
         this.nodeStatus = new String[] {"HIGH_SEND", "MODERATE_SEND", "LOW", "IDLE"};
-        this.stream_frequency.put("HIGH_SEND",10);
-        this.stream_frequency.put("MODERATE_SEND",200);
-        this.stream_frequency.put("LOW",500);
+        this.stream_frequency.put("HIGH_SEND",1000);
+        this.stream_frequency.put("MODERATE_SEND",2000);
+        this.stream_frequency.put("LOW",5000);
         this.stream_frequency.put("IDLE",1000);
     }
 
