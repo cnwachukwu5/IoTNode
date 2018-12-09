@@ -16,7 +16,7 @@ public class IoTNode {
             System.out.println("Connected to CacheNode ...");
             FeedBackLoop feedBackLoop = new FeedBackLoop();
 
-            List<String> strings = randomString(100);
+            List<String> strings = randomString(5000);
             strings.add("EODATA");
 
             int count = 0;

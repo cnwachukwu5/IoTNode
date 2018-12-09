@@ -9,9 +9,9 @@ public class FeedBackLoop {
 
     public FeedBackLoop() {
         this.nodeStatus = new String[] {"HIGH_SEND", "MODERATE_SEND", "LOW", "IDLE"};
-        this.stream_frequency.put("HIGH_SEND",1000);
-        this.stream_frequency.put("MODERATE_SEND",2000);
-        this.stream_frequency.put("LOW",5000);
+        this.stream_frequency.put("HIGH_SEND",100);
+        this.stream_frequency.put("MODERATE_SEND",200);
+        this.stream_frequency.put("LOW",500);
         this.stream_frequency.put("IDLE",1000);
     }
 
